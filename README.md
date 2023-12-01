@@ -1,51 +1,104 @@
-<header>
-
-<!--
-  <<< Author notes: Course header >>>
-  Include a 1280×640 image, course title in sentence case, and a concise description in emphasis.
-  In your repository settings: enable template repository, add your 1280×640 social image, auto delete head branches.
-  Add your open source license, GitHub uses MIT license.
--->
-
-# GitHub Pages
-
-_Create a site or blog from your GitHub repositories with GitHub Pages._
-
-</header>
-
-<!--
-  <<< Author notes: Step 3 >>>
-  Start this step by acknowledging the previous step.
-  Define terms and link to docs.github.com.
-  Historic note: previous version checked the homepage content was not empty.
--->
-
-## Step 3: Customize your homepage
-
-_Nice work setting the theme! :sparkles:_
-
-You can customize your homepage by adding content to either an `index.md` file or the `README.md` file. GitHub Pages first looks for an `index.md` file. Your repository has an `index.md` file so we can update it to include your personalized content.
-
-### :keyboard: Activity: Create your homepage
-
-1. Browse to the `index.md` file in the `my-pages` branch.
-1. In the upper right corner, open the file editor.
-1. Type the content you want on your homepage. You can use Markdown formatting on this page.
-1. (optional) You can also modify `title:` or just ignore it for now. We'll discuss it in the next step.
-1. Commit your changes to the `my-pages` branch.
-1. Wait about 20 seconds then refresh this page (the one you're following instructions from). [GitHub Actions](https://docs.github.com/en/actions) will automatically update to the next step.
-
-<footer>
-
-<!--
-  <<< Author notes: Footer >>>
-  Add a link to get support, GitHub status page, code of conduct, license link.
--->
-
 ---
+layout: default
+---
+<div class="search-container">
+  <input type="text" id="search-input" placeholder="search blog posts..." style="width: 90%;
+    height: 35px;
+    color: #333;
+    background-color: rgba(227,231,236,.2);
+    line-height: 35px;
+    padding:0px 16px;
+    border: 1px solid #c0c0c0;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 17px;
+    outline: none;
+    box-sizing: border-box;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);">
+  <ul id="results-container"></ul>
+</div>
 
-Get help: [Post in our discussion board](https://github.com/orgs/skills/discussions/categories/github-pages) &bull; [Review the GitHub status page](https://www.githubstatus.com/)
+<!--script src="https://unpkg.com/simple-jekyll-search/dest/simple-jekyll-search.min.js"></script-->
+<script src="{{ site.baseurl }}/js/simple-jekyll-search.min.js"></script>
 
-&copy; 2023 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
+<script>
+	window.simpleJekyllSearch = new SimpleJekyllSearch({
+	searchInput: document.getElementById('search-input'),
+	resultsContainer: document.getElementById('results-container'),
+	json: '{{ site.baseurl }}/search.json',
+	searchResultTemplate: '<li><a href="{url}?query={query}" title="{desc}">{title}</a></li>',
+	noResultsText: 'No results found',
+	limit: 10,
+	fuzzy: false,
+	exclude: ['Welcome']
+  })
+</script>
+ 
+{% if site.posts.size == 0 %}
+  <h2>No post found</h2>
+{% endif %}
 
-</footer>
+<div class="posts">
+  {% for post in paginator.posts %}
+  {% unless post.draft %}
+    <article class="post">
+      <h1>
+        <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+      </h1>
+
+      <div clsss="meta">
+        <span class="date">
+          {{ post.date | date: "%Y-%m-%d" }}
+        </span>
+
+        <ul class="tag">
+          {% for tag in post.tags %}
+          <li>
+            <a href="{{ site.url }}{{ site.baseurl }}/tags#{{ tag }}">
+              {{ tag }}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="entry">
+        {{ post.excerpt | truncate: 200 }}
+      </div>
+
+      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
+    </article>
+  {% endunless %}
+  {% endfor %}
+</div>
+
+<div class="pagination">
+  {% if paginator.previous_page %}
+    <span class="prev">
+      <a href="{{ site.baseurl }}{{ paginator.previous_page_path }}" class="prev">
+        ← 上一页
+      </a>
+    </span>
+  {% endif %}
+  {% if paginator.next_page %}
+    <span class="next">
+      <a href="{{ site.baseurl}}{{ paginator.next_page_path }}" class="next">
+        下一页 →
+      </a>
+    </span>
+  {% endif %}
+</div>
+
+<!--不算子网站访客统计-->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<!-- pv的方式，单个用户连续点击n篇文章，记录n次访问量 -->
+<div align="center">
+	<span id="busuanzi_container_site_pv" style="font-family:Consolas;color:Silver;font-size:12px;">
+		View:<span id="busuanzi_value_site_pv" style="font-family:Consolas;color:Silver;font-size:12px;"></span>
+	</span>
+	<!-- uv的方式，单个用户连续点击n篇文章，只记录1次访客数 -->
+	<span id="busuanzi_container_site_uv" style="font-family:Consolas;color:Silver;font-size:12px;">
+		User:<span id="busuanzi_value_site_uv" style="font-family:Consolas;color:Silver;font-size:12px;"></span>
+	</span>
+</div>
